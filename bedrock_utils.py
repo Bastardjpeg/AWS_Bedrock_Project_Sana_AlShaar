@@ -5,13 +5,13 @@ import json
 # Initialize AWS Bedrock client
 bedrock = boto3.client(
     service_name='bedrock-runtime',
-    region_name='us-west-2'  # Replace with your AWS region
+    region_name='us-east-1'  # Set to the region where your KB + models live
 )
 
 # Initialize Bedrock Knowledge Base client
 bedrock_kb = boto3.client(
     service_name='bedrock-agent-runtime',
-    region_name='us-west-2'  # Replace with your AWS region
+    region_name='us-east-1'  # Set to the same region as the KB
 )
 
 def valid_prompt(prompt, model_id):
@@ -114,3 +114,14 @@ def generate_response(prompt, model_id, temperature, top_p):
     except ClientError as e:
         print(f"Error generating response: {e}")
         return ""
+    
+    from bedrock_utils import generate_response, valid_prompt
+
+model_id = "anthropic.claude-3-haiku-20240307-v1:0"
+prompt = "Explain hydraulic excavator safety checks."
+
+if valid_prompt(prompt, model_id):
+    answer = generate_response(prompt, model_id, temperature=0.7, top_p=0.9)
+    print(answer)
+else:
+    print("Prompt rejected by safety filter.")
